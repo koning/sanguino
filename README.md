@@ -1,7 +1,7 @@
 # sanguino
 
 
-This package will define the Sanguino code necessary for Sanguino and AztEeg
+This package will define the Sanguino code necessary for Sanguino and Azteeg
 programming with Arduino 1.6.6.
 
 Directions:
