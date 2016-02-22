@@ -1,8 +1,8 @@
 # sanguino
 
 
-This package will define the sanguino code necessary for Sanguino an Aztteg
-programing with Arduino 1.6.6.
+This package will define the Sanguino code necessary for Sanguino and AztEeg
+programming with Arduino 1.6.6.
 
 Directions:
 
@@ -13,4 +13,4 @@ git clone https://github.com/koning/sanguino.git
 
 
 The Boards menu should be populated with a new Sanguino AVR boards
-section.
+section after restarting the Arduino IDE.
