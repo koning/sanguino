@@ -10,9 +10,8 @@ atmega644.upload.tool=avrdude
 atmega644.bootloader.low_fuses=0xFF
 atmega644.bootloader.high_fuses=0x9A
 atmega644.bootloader.extended_fuses=0xFF
-atmega644.bootloader.path=atmega
-atmega644.bootloader.file=ATmegaBOOT_168_atmega644p.hex
-#atmega644.bootloader.file=ATmegaBOOT_644P.hex
+atmega644.bootloader.file=atmega/ATmegaBOOT_168_atmega644p.hex
+#atmega644.bootloader.file=atmega/ATmegaBOOT_644P.hex
 atmega644.bootloader.unlock_bits=0x3F
 atmega644.bootloader.lock_bits=0x0F
 
@@ -33,8 +32,7 @@ atmega12848m.upload.tool=avrdude
 atmega12848m.bootloader.low_fuses=0xFD
 atmega12848m.bootloader.high_fuses=0x9A
 atmega12848m.bootloader.extended_fuses=0xFF
-atmega12848m.bootloader.path=atmega
-atmega12848m.bootloader.file=ATmegaBOOT_168_atmega1284p_8m.hex
+atmega12848m.bootloader.file=atmega/ATmegaBOOT_168_atmega1284p_8m.hex
 atmega12848m.bootloader.unlock_bits=0x3F
 atmega12848m.bootloader.lock_bits=0x0F
 
@@ -56,8 +54,7 @@ atmega1284.upload.tool=avrdude
 atmega1284.bootloader.low_fuses=0xFF
 atmega1284.bootloader.high_fuses=0x9A
 atmega1284.bootloader.extended_fuses=0xFF
-atmega1284.bootloader.path=atmega
-atmega1284.bootloader.file=ATmegaBOOT_168_atmega1284p.hex
+atmega1284.bootloader.file=atmega/ATmegaBOOT_168_atmega1284p.hex
 atmega1284.bootloader.unlock_bits=0x3F
 atmega1284.bootloader.lock_bits=0x0F
 
@@ -81,8 +78,7 @@ azteegX1v1.upload.tool=avrdude
 azteegX1v1.bootloader.low_fuses=0xFF
 azteegX1v1.bootloader.high_fuses=0xDC
 azteegX1v1.bootloader.extended_fuses=0xFD
-azteegX1v1.bootloader.path=atmega644p
-azteegX1v1.bootloader.file=ATmegaBOOT_168_atmega644p.hex
+azteegX1v1.bootloader.file=atmega644p/ATmegaBOOT_168_atmega644p.hex
 azteegX1v1.bootloader.unlock_bits=0x3F
 azteegX1v1.bootloader.lock_bits=0x0F
 
@@ -103,8 +99,7 @@ azteegX1v1_5.upload.speed=57600
 azteegX1v1_5.bootloader.low_fuses=0xD6
 azteegX1v1_5.bootloader.high_fuses=0xD8
 azteegX1v1_5.bootloader.extended_fuses=0xFD
-azteegX1v1_5.bootloader.path=atmega
-azteegX1v1_5.bootloader.file=ATmegaBOOT_168_atmega1284p.hex
+azteegX1v1_5.bootloader.file=atmega/ATmegaBOOT_168_atmega1284p.hex
 azteegX1v1_5.bootloader.unlock_bits=0x3F
 azteegX1v1_5.bootloader.lock_bits=0x0F
 
