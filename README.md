@@ -2,7 +2,11 @@
 
 
 This package will define the Sanguino code necessary for Sanguino and Azteeg
+<<<<<<< HEAD
 programming with Arduino 1.6.6.
+=======
+programming with Arduino 1.6.X.
+>>>>>>> fa2ff0a150a086530955a91519193c68c571f191
 
 Directions:
 
