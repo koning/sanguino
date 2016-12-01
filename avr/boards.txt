@@ -115,23 +115,24 @@ azteegX1v1_5.build.variant=standard
 
 ##############################################################
 
-Anet_A8.name=Anet A8/ATmega1284p 16Mhz
+anet_A8.name=Anet A8/ATmega1284p 16Mhz
 
-Anet_A8.upload.protocol=stk500v2
-Anet_A8.upload.maximum_size=131072
-Anet_A8.upload.speed=57600
-Anet_A8.upload.tool=avrdude
+anet_A8.upload.protocol=stk500v1
+anet_A8.upload.maximum_size=131072
+anet_A8.upload.speed=57600
+anet_A8.upload.tool=arduino:avrdude
 
-Anet_A8.bootloader.low_fuses=0xD6
-Anet_A8.bootloader.high_fuses=0xD8
-Anet_A8.bootloader.extended_fuses=0xFD
-Anet_A8.bootloader.file=atmega/ATmegaBOOT_168_atmega1284p.hex
-Anet_A8.bootloader.unlock_bits=0x3F
-Anet_A8.bootloader.lock_bits=0x0F
+anet_A8.bootloader.low_fuses=0xD6
+#anet_A8.bootloader.high_fuses=0xD8
+anet_A8.bootloader.high_fuses=0xDA
+anet_A8.bootloader.extended_fuses=0xFD
+anet_A8.bootloader.file=atmega/ATmegaBOOT_168_atmega1284p.hex
+anet_A8.bootloader.unlock_bits=0x3F
+anet_A8.bootloader.lock_bits=0x0F
+anet_A8.bootloader.tool=avrdude
 
-Anet_A8.build.mcu=atmega1284p
-Anet_A8.build.board=AVR_ATMEGA1284P
-Anet_A8.build.f_cpu=16000000L
-Anet_A8.build.core=arduino
-Anet_A8.build.variant=standard
-
+anet_A8.build.mcu=atmega1284p
+anet_A8.build.board=AVR_ATMEGA1284P
+anet_A8.build.f_cpu=16000000L
+anet_A8.build.core=arduino:arduino
+anet_A8.build.variant=standard
