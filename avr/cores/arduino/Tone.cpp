@@ -29,6 +29,9 @@ Version Modified By Date     Comments
                     09/11/25 Fixed timer0 from being excluded
 0006    D Mellis    09/12/29 Replaced objects with functions
 0007    M Sproul    10/08/29 Changed #ifdefs from cpu to register
+0008    S Kanemoto  12/06/22 Fixed for Leonardo by @maris_HY
+0009    J Reucker   15/04/10 Issue #292 Fixed problems with ATmega8 (thanks to Pete62)
+0010    jipp        15/04/13 added additional define check #2923
 *************************************************/
 
 #include <avr/interrupt.h>
@@ -85,10 +88,10 @@ volatile uint8_t timer5_pin_mask;
 #endif
 
 
-// MLS: This does not make sense, the 3 options are the same
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 
 #define AVAILABLE_TONE_PINS 1
+#define USE_TIMER2
 
 const uint8_t PROGMEM tone_pin_to_timer_PGM[] = { 2 /*, 3, 4, 5, 1, 0 */ };
 static uint8_t tone_pins[AVAILABLE_TONE_PINS] = { 255 /*, 255, 255, 255, 255, 255 */ };
@@ -96,13 +99,23 @@ static uint8_t tone_pins[AVAILABLE_TONE_PINS] = { 255 /*, 255, 255, 255, 255, 25
 #elif defined(__AVR_ATmega8__)
 
 #define AVAILABLE_TONE_PINS 1
+#define USE_TIMER2
 
 const uint8_t PROGMEM tone_pin_to_timer_PGM[] = { 2 /*, 1 */ };
 static uint8_t tone_pins[AVAILABLE_TONE_PINS] = { 255 /*, 255 */ };
 
+#elif defined(__AVR_ATmega32U4__)
+ 
+#define AVAILABLE_TONE_PINS 1
+#define USE_TIMER3
+ 
+const uint8_t PROGMEM tone_pin_to_timer_PGM[] = { 3 /*, 1 */ };
+static uint8_t tone_pins[AVAILABLE_TONE_PINS] = { 255 /*, 255 */ };
+ 
 #else
 
 #define AVAILABLE_TONE_PINS 1
+#define USE_TIMER2
 
 // Leave timer 0 to last.
 const uint8_t PROGMEM tone_pin_to_timer_PGM[] = { 2 /*, 1, 0 */ };
@@ -140,7 +153,7 @@ static int8_t toneBegin(uint8_t _pin)
     // whereas 16 bit timers are set to either ck/1 or ck/64 prescalar
     switch (_timer)
     {
-      #if defined(TCCR0A) && defined(TCCR0B)
+      #if defined(TCCR0A) && defined(TCCR0B) && defined(WGM01)
       case 0:
         // 8 bit timer
         TCCR0A = 0;
@@ -196,7 +209,7 @@ static int8_t toneBegin(uint8_t _pin)
         #if defined(WGM42)
           bitWrite(TCCR4B, WGM42, 1);
         #elif defined(CS43)
-          #warning this may not be correct
+          // TODO this may not be correct
           // atmega32u4
           bitWrite(TCCR4B, CS43, 1);
         #endif
@@ -285,13 +298,13 @@ void tone(uint8_t _pin, unsigned int frequency, unsigned long duration)
 #if defined(TCCR0B)
       if (_timer == 0)
       {
-        TCCR0B = prescalarbits;
+        TCCR0B = (TCCR0B & 0b11111000) | prescalarbits;
       }
       else
 #endif
 #if defined(TCCR2B)
       {
-        TCCR2B = prescalarbits;
+        TCCR2B = (TCCR2B & 0b11111000) | prescalarbits;
       }
 #else
       {
@@ -378,7 +391,7 @@ void tone(uint8_t _pin, unsigned int frequency, unsigned long duration)
         break;
 #endif
 
-#if defined(TIMSK3)
+#if defined(OCR3A) && defined(TIMSK3) && defined(OCIE3A)
       case 3:
         OCR3A = ocr;
         timer3_toggle_count = toggle_count;
@@ -386,7 +399,7 @@ void tone(uint8_t _pin, unsigned int frequency, unsigned long duration)
         break;
 #endif
 
-#if defined(TIMSK4)
+#if defined(OCR4A) && defined(TIMSK4) && defined(OCIE4A)
       case 4:
         OCR4A = ocr;
         timer4_toggle_count = toggle_count;
@@ -443,21 +456,21 @@ void disableTimer(uint8_t _timer)
       #endif
       break;
 
-#if defined(TIMSK3)
+#if defined(TIMSK3) && defined(OCIE3A)
     case 3:
-      TIMSK3 = 0;
+      bitWrite(TIMSK3, OCIE3A, 0);
       break;
 #endif
 
-#if defined(TIMSK4)
+#if defined(TIMSK4) && defined(OCIE4A)
     case 4:
-      TIMSK4 = 0;
+      bitWrite(TIMSK4, OCIE4A, 0);
       break;
 #endif
 
-#if defined(TIMSK5)
+#if defined(TIMSK5) && defined(OCIE5A)
     case 5:
-      TIMSK5 = 0;
+      bitWrite(TIMSK5, OCIE5A, 0);
       break;
 #endif
   }
@@ -472,6 +485,7 @@ void noTone(uint8_t _pin)
     if (tone_pins[i] == _pin) {
       _timer = pgm_read_byte(tone_pin_to_timer_PGM + i);
       tone_pins[i] = 255;
+      break;
     }
   }
   
@@ -480,8 +494,7 @@ void noTone(uint8_t _pin)
   digitalWrite(_pin, 0);
 }
 
-#if 0
-#if !defined(__AVR_ATmega8__)
+#ifdef USE_TIMER0
 ISR(TIMER0_COMPA_vect)
 {
   if (timer0_toggle_count != 0)
@@ -501,6 +514,7 @@ ISR(TIMER0_COMPA_vect)
 #endif
 
 
+#ifdef USE_TIMER1
 ISR(TIMER1_COMPA_vect)
 {
   if (timer1_toggle_count != 0)
@@ -520,6 +534,7 @@ ISR(TIMER1_COMPA_vect)
 #endif
 
 
+#ifdef USE_TIMER2
 ISR(TIMER2_COMPA_vect)
 {
 
@@ -541,12 +556,10 @@ ISR(TIMER2_COMPA_vect)
 //    *timer2_pin_port &= ~(timer2_pin_mask);  // keep pin low after stop
   }
 }
+#endif
 
 
-
-//#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-#if 0
-
+#ifdef USE_TIMER3
 ISR(TIMER3_COMPA_vect)
 {
   if (timer3_toggle_count != 0)
@@ -563,7 +576,10 @@ ISR(TIMER3_COMPA_vect)
     *timer3_pin_port &= ~(timer3_pin_mask);  // keep pin low after stop
   }
 }
+#endif
 
+
+#ifdef USE_TIMER4
 ISR(TIMER4_COMPA_vect)
 {
   if (timer4_toggle_count != 0)
@@ -580,7 +596,10 @@ ISR(TIMER4_COMPA_vect)
     *timer4_pin_port &= ~(timer4_pin_mask);  // keep pin low after stop
   }
 }
+#endif
 
+
+#ifdef USE_TIMER5
 ISR(TIMER5_COMPA_vect)
 {
   if (timer5_toggle_count != 0)

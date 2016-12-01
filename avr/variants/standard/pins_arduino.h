@@ -32,43 +32,46 @@
 
 #include <avr/pgmspace.h>
 
-#define NOT_A_PIN 0
-#define NOT_A_PORT 0
+#define NUM_DIGITAL_PINS            24
+#define NUM_ANALOG_INPUTS           8
+#define analogInputToDigitalPin(p)  ((p < 6) ? (p) + 14 : -1)
 
-#define NOT_ON_TIMER 0
-#define TIMER0A 1
-#define TIMER0B 2
-#define TIMER1A 3
-#define TIMER1B 4
-#define TIMER2  5
-#define TIMER2A 6
-#define TIMER2B 7
-
-#define TIMER3A 8
-#define TIMER3B 9
-#define TIMER3C 10
-#define TIMER4A 11
-#define TIMER4B 12
-#define TIMER4C 13
-#ifndef TIMER5A
-#define TIMER5A 14
-#endif
-#ifndef TIMER5B
-#define TIMER5B 15
-#endif
-#ifndef TIMER5C
-#define TIMER5C 16
+#if defined(__AVR_ATmega8__)
+#define digitalPinHasPWM(p)         ((p) == 9 || (p) == 10 || (p) == 11)
+#else
+#define digitalPinHasPWM(p)         ((p) == 3 || (p) == 5 || (p) == 6 || (p) == 9 || (p) == 10 || (p) == 11)
 #endif
 
-const static uint8_t SS   = 4;
-const static uint8_t MOSI = 5;
-const static uint8_t MISO = 6;
-const static uint8_t SCK  = 7;
+// Arduino.h says
+//#define TIMER2  6
+//#define TIMER2A 7
+//#define TIMER2B 8
 
-static const uint8_t SDA = 17;
-static const uint8_t SCL = 16;
+// This file said
+//#define TIMER2  5
+//#define TIMER2A 6
+//#define TIMER2B 7
+
+#define PIN_SPI_SS    (4)
+#define PIN_SPI_MOSI  (5)
+#define PIN_SPI_MISO  (6)
+#define PIN_SPI_SCK   (7)
+
+static const uint8_t SS   = PIN_SPI_SS;
+static const uint8_t MOSI = PIN_SPI_MOSI;
+static const uint8_t MISO = PIN_SPI_MISO;
+static const uint8_t SCK  = PIN_SPI_SCK;
+
 static const uint8_t LED_BUILTIN = 13;
 
+// PCINT 16 and 17
+#define PIN_WIRE_SDA        (17)
+#define PIN_WIRE_SCL        (16)
+
+static const uint8_t SDA = PIN_WIRE_SDA;
+static const uint8_t SCL = PIN_WIRE_SCL;
+
+// Digital pin numbering
 static const uint8_t A0 = 31;
 static const uint8_t A1 = 30;
 static const uint8_t A2 = 29;
@@ -114,11 +117,6 @@ static const uint8_t A7 = 24;
 //  PWM (D 14) PD6 20|        |21  PD7 (D 15) PWM
 //                   +--------+
 //
-#define NUM_DIGITAL_PINS            24
-#define NUM_ANALOG_INPUTS           8
-#define analogInputToDigitalPin(p)  ((p < 7) ? (p) + 24 : -1)
-
-#define digitalPinHasPWM(p)         ((p) == 3 || (p) == 4 || (p) == 12 || (p) == 13 || (p) == 14 || (p) == 15 )
 
 #define PA 1
 #define PB 2
@@ -237,7 +235,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
         NOT_ON_TIMER,   /* 1  - PB1 */
         NOT_ON_TIMER,   /* 2  - PB2 */
         TIMER0A,        /* 3  - PB3 */
-        TIMER0B,                /* 4  - PB4 */
+        TIMER0B,        /* 4  - PB4 */
         NOT_ON_TIMER,   /* 5  - PB5 */
         NOT_ON_TIMER,   /* 6  - PB6 */
         NOT_ON_TIMER,   /* 7  - PB7 */
@@ -247,8 +245,8 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
         NOT_ON_TIMER,   /* 11 - PD3 */
         TIMER1B,        /* 12 - PD4 */
         TIMER1A,        /* 13 - PD5 */
-        TIMER2B,        /* 14 - PD6 */
-        TIMER2A,        /* 15 - PD7 */
+        TIMER2A,        /* 14 - PD6 */
+        TIMER2,         /* 15 - PD7 */
         NOT_ON_TIMER,   /* 16 - PC0 */
         NOT_ON_TIMER,   /* 17 - PC1 */
         NOT_ON_TIMER,   /* 18 - PC2 */
@@ -264,7 +262,27 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
         NOT_ON_TIMER,   /* 28 - PA4 */
         NOT_ON_TIMER,   /* 29 - PA5 */
         NOT_ON_TIMER,   /* 30 - PA6 */
-        NOT_ON_TIMER   /* 31 - PA7 */
+        NOT_ON_TIMER    /* 31 - PA7 */
 };
+
 #endif
+
+// These serial port names are intended to allow libraries and architecture-neutral
+// sketches to automatically default to the correct port name for a particular type
+// of use.  For example, a GPS module would normally connect to SERIAL_PORT_HARDWARE_OPEN,
+// the first hardware serial port whose RX/TX pins are not dedicated to another use.
+//
+// SERIAL_PORT_MONITOR        Port which normally prints to the Arduino Serial Monitor
+//
+// SERIAL_PORT_USBVIRTUAL     Port which is USB virtual serial
+//
+// SERIAL_PORT_LINUXBRIDGE    Port which connects to a Linux system via Bridge library
+//
+// SERIAL_PORT_HARDWARE       Hardware serial port, physical RX & TX pins.
+//
+// SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
+//                            pins are NOT connected to anything by default.
+#define SERIAL_PORT_MONITOR   Serial
+#define SERIAL_PORT_HARDWARE  Serial
+
 #endif

@@ -1,4 +1,8 @@
-############################################################
+# See: http://code.google.com/p/arduino/wiki/Platforms
+
+menu.cpu=Processor
+
+##############################################################
 
 atmega644.name=Sanguino W/ ATmega644P
 
@@ -113,9 +117,10 @@ azteegX1v1_5.build.variant=standard
 
 Anet_A8.name=Anet A8/ATmega1284p 16Mhz
 
-Anet_A8.upload.protocol=stk500
+Anet_A8.upload.protocol=stk500v2
 Anet_A8.upload.maximum_size=131072
 Anet_A8.upload.speed=57600
+Anet_A8.upload.tool=avrdude
 
 Anet_A8.bootloader.low_fuses=0xD6
 Anet_A8.bootloader.high_fuses=0xD8
